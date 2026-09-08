@@ -1,27 +1,41 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
   <meta charset="utf-8">
-  <title>Rust + Wasm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tiny Exp</title>
+  <style>
+    body { max-width: 900px; margin: 3rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; color: #203040; background: #f5f7fa; }
+    textarea, select, button { font: inherit; }
+    textarea { box-sizing: border-box; display: block; width: 100%; margin: .5rem 0 1rem; padding: 1rem; font-family: monospace; }
+    button, select { padding: .5rem; margin: .3rem 0; }
+    button { cursor: pointer; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 1rem; background: white; border: 1px solid #ccd5df; border-radius: 6px; min-height: 2rem; }
+    #error { color: #a12626; white-space: pre-wrap; }
+    label { display: block; }
+  </style>
 </head>
-
 <body>
-  <p id="result">読み込み中…</p>
-
-  <script type="module">
-    import init, { greet } from "./pkg/tiny_exp.js";
-
-    const result = document.getElementById("result");
-
-    try {
-      await init();
-      result.textContent = greet("世界");
-    } catch (error) {
-      result.textContent = "Wasmの読み込みに失敗しました";
-      console.error(error);
-    }
-  </script>
+  <h1>Tiny Exp</h1>
+  <p>式を入力して、トークン・AST・評価結果を表示します。</p>
+  <label for="example">サンプル</label>
+  <select id="example">
+    <option value="1">整数</option>
+    <option value="1 + 2 * 3">演算の優先順位</option>
+    <option value="(1 + 2) * 3">括弧</option>
+    <option value="if 1 < 2 then 42 else 0">条件分岐</option>
+    <option value="if true then 1 else true + 2">選択した分岐だけ評価</option>
+  </select>
+  <form id="runner">
+    <label for="source">式</label>
+    <textarea id="source" rows="5" spellcheck="false">1</textarea>
+    <button id="execute" type="submit" disabled>実行</button>
+  </form>
+  <p id="status" role="status">Wasmを読み込み中…</p>
+  <p id="error" role="alert"></p>
+  <h2>トークン</h2><pre id="tokens">未実行</pre>
+  <h2>AST</h2><pre id="ast">未実行</pre>
+  <h2>評価結果</h2><pre id="value">未実行</pre>
+  <script type="module" src="./web.js"></script>
 </body>
-
 </html>
